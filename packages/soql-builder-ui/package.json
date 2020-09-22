@@ -38,11 +38,11 @@
     "prettier": "prettier --write \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
     "prettier:verify": "prettier --list-different \"**/*.{css,html,js,json,md,ts,yaml,yml}\"",
     "test": "jest --runInBand",
-    "test:unit": "lwc-services test:unit",
-    "test:unit:coverage": "lwc-services test:unit --coverage",
-    "test:unit:debug": "lwc-services test:unit --debug",
-    "test:unit:watch": "lwc-services test:unit --watch",
-    "watch": "lwc-services watch",
+    "test:unit": "./node_modules/.bin/lwc-services test:unit",
+    "test:unit:coverage": "./node_modules/.bin/lwc-services test:unit --coverage",
+    "test:unit:debug": "./node_modules/.bin/lwc-services test:unit --debug",
+    "test:unit:watch": "./node_modules/.bin/lwc-services test:unit --watch",
+    "watch": "./node_modules/.bin/lwc-services watch",
     "start": "yarn watch"
   }
 }
