@@ -101,6 +101,7 @@ workflows:
   version: 2
   commit-workflow:
     jobs:
+      - setup-env
       - soql-builder-ui
       - language-server
       - sobject-metadata
