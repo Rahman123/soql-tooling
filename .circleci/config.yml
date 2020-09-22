@@ -102,13 +102,15 @@ workflows:
   commit-workflow:
     jobs:
       - setup-env
-      - soql-builder-ui
-      - language-server
-      - sobject-metadata
-      - soql-model
-      - notify_slack:
+      - soql-builder-ui:
           requires:
-            - soql-builder-ui
-            - language-server
-            - sobject-metadata
-            - soql-model
+            - setup-env
+      #- language-server
+      #- sobject-metadata
+      #- soql-model
+      #- notify_slack:
+      #    requires:
+      #      - soql-builder-ui
+      #      - language-server
+      #      - sobject-metadata
+      #      - soql-model
