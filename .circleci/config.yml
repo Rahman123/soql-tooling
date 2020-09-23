@@ -8,12 +8,6 @@ variables:
     - image: circleci/node:12.16.1-stretch
 
 jobs:
-  setup-env:
-    docker: *node-build-image
-    steps:
-      - checkout
-      - run: yarn install
-
   soql-builder-ui:
     docker: *node-build-image
     environment:
@@ -23,6 +17,7 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
       - run: yarn install
+      - run: lerna bootstrap
       - save_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
