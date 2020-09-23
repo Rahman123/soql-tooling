@@ -118,9 +118,7 @@ workflows:
   version: 2
   commit-workflow:
     jobs:
-      - soql-builder-ui:
-          requires:
-            - setup-env
+      - soql-builder-ui
       #- language-server
       #- sobject-metadata
       #- soql-model
