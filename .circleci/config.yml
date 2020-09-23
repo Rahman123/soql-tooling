@@ -12,13 +12,7 @@ jobs:
     docker: *node-build-image
     steps:
       - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
       - run: yarn install
-      - save_cache:
-          key: dependency-cache-{{ checksum "yarn.lock" }}
-          paths:
-            - ./node_modules
 
   soql-builder-ui:
     docker: *node-build-image
@@ -26,6 +20,13 @@ jobs:
       PACKAGE_PATH: 'packages/soql-builder-ui'
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
       - run:
           name: Run SOQL builder UI Unit Tests
           command: |
@@ -42,6 +43,13 @@ jobs:
       PACKAGE_PATH: 'packages/language-server'
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
       - run:
           name: 'Language Server: Run LWC Unit Tests'
           command: |
@@ -58,6 +66,13 @@ jobs:
       PACKAGE_PATH: 'packages/sobject-metadata'
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
       - run:
           name: 'Run Sobject Metadata Server Unit Tests'
           command: |
@@ -74,6 +89,13 @@ jobs:
       PACKAGE_PATH: 'packages/soql-model'
     steps:
       - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+      - run: yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "yarn.lock" }}
+          paths:
+            - ./node_modules
       - run:
           name: 'Run SOQL Model Server Unit Tests'
           command: |
