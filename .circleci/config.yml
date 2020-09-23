@@ -17,11 +17,12 @@ jobs:
       - restore_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
       - run: yarn install
-      - run: lerna bootstrap
       - save_cache:
           key: dependency-cache-{{ checksum "yarn.lock" }}
           paths:
             - ./node_modules
+      - run: yarn global add lerna
+      - run: lerna bootstrap
       - run:
           name: Run SOQL builder UI Unit Tests
           command: |
