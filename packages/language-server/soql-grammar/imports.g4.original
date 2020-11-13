@@ -1,0 +1,11 @@
+parser grammar imports;
+
+@header {
+var ParserHelper = require('./parserHelper').ParserHelper;
+}
+
+@members {
+this.helper =  undefined;
+this.getHelper = () => this.helper;
+this.setHelper = (helper) => { this.helper = helper; };
+}

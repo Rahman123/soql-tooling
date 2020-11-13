@@ -6,8 +6,11 @@
     "node": "*"
   },
   "scripts": {
-    "build": "tsc --project .",
-    "clean": "rimraf lib && rimraf node_modules",
+    "generate-parser": "mkdirp src.generated/soql-completion-parser; cp soql-grammar/*.ts ./src.generated/soql-completion-parser; antlr4ts -visitor -Xexact-output-dir -o src.generated/soql-completion-parser soql-grammar/SoqlLexer.g4; cd src.generated/soql-completion-parser && antlr4ts -visitor -Xexact-output-dir -o . ../../soql-grammar/SoqlParser.g4",
+    "fix-generated-parser-ts-errors": "rexreplace 'public get serializedATN' '\\/* @ts-ignore *\\/\\npublic get serializedATN' src.generated/soql-completion-parser/Soql*.ts  && rexreplace 'public get ruleIndex' '\\/* @ts-ignore *\\/\\npublic get ruleIndex' src.generated/soql-completion-parser/SoqlParser.ts && rexreplace 'public _i: SoqlIdentifierContext' 'public _i: SoqlIdentifierContext | undefined' src.generated/soql-completion-parser/SoqlParser.ts",
+    "compile": "tsc --project .",
+    "build": "yarn run generate-parser && yarn run fix-generated-parser-ts-errors && yarn run compile",
+    "clean": "rimraf lib && rimraf node_modules && rimraf ./src.generated/soql-completion-parser",
     "test": "jest --runInBand",
     "test:unit:coverage": "jest --runInBand --coverage",
     "prepack": "./scripts/bundle-parser.js",
@@ -17,6 +20,8 @@
   },
   "dependencies": {
     "antlr4": "4.8.0",
+    "antlr4-c3": "^1.1.12",
+    "antlr4ts": "^0.5.0-alpha.3",
     "vscode-languageserver": "6.1.1",
     "vscode-languageserver-textdocument": "1.0.1",
     "@salesforce/soql-parser": "file:../../Dependencies/salesforce-soql-parser-0.17.0.tgz"
@@ -24,9 +29,12 @@
   "devDependencies": {
     "@babel/core": "^7.12.3",
     "@babel/template": "^7.10.4",
-    "@types/antlr4": "4.7.2",
     "@types/jest": "22.2.3",
+    "antlr4-tool": "^1.1.1",
+    "antlr4ts-cli": "^0.5.0-alpha.3",
     "jest": "26.1.0",
+    "mkdirp": "^1.0.4",
+    "rexreplace": "6.0.14",
     "ts-jest": "26.1.3"
   },
   "repository": {
