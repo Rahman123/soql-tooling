@@ -71,13 +71,7 @@ export default class App extends LightningElement {
   }
 
   connectedCallback() {
-    this.modelService.UIModel.subscribe((newQuery: ToolingModelJson) => {
-      this.inspectErrors(newQuery.errors);
-      if (this.hasUnrecoverableError === false) {
-        this.loadSObjectMetadata(newQuery);
-      }
-      this.query = newQuery;
-    });
+    this.modelService.UIModel.subscribe(this.uiModelSubscriber);
 
     this.toolingSDK.sobjects.subscribe((objs: string[]) => {
       this.isFromLoading = false;
@@ -128,6 +122,21 @@ export default class App extends LightningElement {
       this.isFieldsLoading === false
     ) {
       this.onSObjectChanged(newSObject);
+    }
+  }
+
+  uiModelSubscriber(newQuery: ToolingModelJson) {
+    console.log('in uiModelSubscriber');
+    // only re-render if incoming soql statement is different
+    if (this.query.originalSoqlStatement !== newQuery.originalSoqlStatement) {
+      console.log('setting new query', newQuery.originalSoqlStatement);
+      this.inspectErrors(newQuery.errors);
+      if (this.hasUnrecoverableError === false) {
+        this.loadSObjectMetadata(newQuery);
+      }
+      this.query = newQuery;
+    } else {
+      console.log('ignoring new query');
     }
   }
 

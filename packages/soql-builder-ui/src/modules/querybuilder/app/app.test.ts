@@ -33,7 +33,6 @@ class TestMessageService implements IMessageService {
 }
 
 class TestApp extends App {
-  query: ToolingModelJson = ToolingModelService.toolingModelTemplate;
   @api
   fields;
   @api
@@ -42,6 +41,8 @@ class TestApp extends App {
   isFieldsLoading = false;
   @api
   hasUnrecoverableError = false;
+  @api
+  query: ToolingModelJson = ToolingModelService.toolingModelTemplate;
 }
 
 describe('App should', () => {
@@ -122,7 +123,7 @@ describe('App should', () => {
       expect(loadSObjectMetadataSpy).not.toHaveBeenCalled();
       app.fields = [];
       messageService.messagesToUI.next(
-        createSoqlEditorEvent('SELECT Id FROM Account')
+        createSoqlEditorEvent('SELECT Id, Name FROM Account')
       );
       expect(loadSObjectMetadataSpy.mock.calls.length).toEqual(1);
       expect(app.fields.length).toEqual(0);
@@ -231,6 +232,17 @@ describe('App should', () => {
           '.unsupported-syntax'
         );
         expect(blockingElement.length).toBeTruthy();
+      });
+    });
+
+    it('not process an incoming message if the soql statement has not changed', async () => {
+      console.log('starting test');
+      const soqlStatement = 'SELECT Id, Name FROM Account';
+      return Promise.resolve().then(() => {
+        messageService.messagesToUI.next(createSoqlEditorEvent(soqlStatement));
+        expect(app.query.originalSoqlStatement).toEqual(soqlStatement);
+        messageService.messagesToUI.next(createSoqlEditorEvent(soqlStatement));
+        expect(app.query.originalSoqlStatement).toEqual(soqlStatement);
       });
     });
   });

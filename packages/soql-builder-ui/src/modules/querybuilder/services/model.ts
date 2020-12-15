@@ -37,6 +37,7 @@ export interface ToolingModel extends IMap {
   where: List<Map>;
   errors: List<Map>;
   unsupported: string[];
+  originalSoqlStatement: string;
 }
 // Public inteface for accessing modelService.query
 export interface ToolingModelJson extends JsonMap {

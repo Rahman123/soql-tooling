@@ -40,6 +40,7 @@ export class ToolingModelService {
     this.immutableModel.subscribe(this.saveViewState.bind(this));
     this.UIModel = this.immutableModel.pipe(
       map((soqlQueryModel) => {
+        console.log('in pipe');
         try {
           return (soqlQueryModel as IMap).toJS();
         } catch (e) {
@@ -215,13 +216,20 @@ export class ToolingModelService {
     if (event && event.type) {
       switch (event.type) {
         case MessageType.TEXT_SOQL_CHANGED: {
-          const originalSoqlStatement = event.payload as string;
-          const soqlJSModel = convertSoqlToUiModel(originalSoqlStatement);
-          soqlJSModel.originalSoqlStatement = originalSoqlStatement;
-
-          const updatedModel = fromJS(soqlJSModel);
-          if (!updatedModel.equals(this.immutableModel.getValue())) {
+          const newSoqlStatement = (event.payload as string) || '';
+          const currentSoqlStatement = this.getModel().get(
+            'originalSoqlStatement'
+          );
+          // Only process the message if statement is differnt
+          if (currentSoqlStatement !== newSoqlStatement) {
+            console.log('processing message');
+            const soqlJSModel = convertSoqlToUiModel(newSoqlStatement);
+            soqlJSModel.originalSoqlStatement = newSoqlStatement;
+            const updatedModel = fromJS(soqlJSModel);
+            console.log('calling immutable.next');
             this.immutableModel.next(updatedModel);
+          } else {
+            console.log('ignoring message');
           }
           break;
         }
@@ -240,8 +248,12 @@ export class ToolingModelService {
   }
 
   private changeModel(newModel) {
-    this.immutableModel.next(newModel);
-    this.sendMessageToBackend(newModel);
+    const newSoqlStatement = this.sendMessageToBackend(newModel);
+    const newModelWithSoqlStatement = newModel.set(
+      'originalSoqlStatement',
+      newSoqlStatement
+    );
+    this.immutableModel.next(newModelWithSoqlStatement);
   }
 
   public sendMessageToBackend(newModel: ToolingModel) {
@@ -251,6 +263,7 @@ export class ToolingModelService {
         type: MessageType.UI_SOQL_CHANGED,
         payload
       });
+      return payload;
     } catch (e) {
       console.error(e);
     }
