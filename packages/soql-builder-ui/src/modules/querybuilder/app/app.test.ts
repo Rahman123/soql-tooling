@@ -132,7 +132,7 @@ describe('App should', () => {
     it('should send a runquery message to vs code with runquery event', async () => {
       const header = app.shadowRoot.querySelector('querybuilder-header');
       const postMessageSpy = jest.spyOn(messageService, 'sendMessage');
-      header.dispatchEvent(new Event('runquery'));
+      header.dispatchEvent(new Event('header__run_query'));
 
       return Promise.resolve().then(() => {
         expect(postMessageSpy).toHaveBeenCalled();
@@ -271,7 +271,7 @@ describe('App should', () => {
       };
 
       where.dispatchEvent(
-        new CustomEvent('modifierselectionwithandor', eventPayload)
+        new CustomEvent('where__group_selection', eventPayload)
       );
       expect(postMessageSpy).toHaveBeenCalled();
       expect((postMessageSpy.mock.calls[0][0] as SoqlEditorEvent).type).toEqual(
@@ -295,7 +295,7 @@ describe('App should', () => {
       };
 
       where.dispatchEvent(
-        new CustomEvent('where__conditionremoved', eventPayload)
+        new CustomEvent('where__condition_removed', eventPayload)
       );
       expect(postMessageSpy).toHaveBeenCalled();
       expect((postMessageSpy.mock.calls[0][0] as SoqlEditorEvent).type).toEqual(
@@ -315,7 +315,9 @@ describe('App should', () => {
         }
       };
 
-      where.dispatchEvent(new CustomEvent('andorselection', eventPayload));
+      where.dispatchEvent(
+        new CustomEvent('where__andor_selection', eventPayload)
+      );
       expect(postMessageSpy).toHaveBeenCalled();
       expect((postMessageSpy.mock.calls[0][0] as SoqlEditorEvent).type).toEqual(
         MessageType.UI_SOQL_CHANGED
@@ -332,7 +334,7 @@ describe('App should', () => {
           field: 'People are Strange'
         }
       };
-      orderBy.dispatchEvent(new CustomEvent('orderbyselected', eventPayload));
+      orderBy.dispatchEvent(new CustomEvent('orderby__selected', eventPayload));
       expect(postMessageSpy).toHaveBeenCalled();
       expect((postMessageSpy.mock.calls[0][0] as SoqlEditorEvent).type).toEqual(
         MessageType.UI_SOQL_CHANGED
@@ -350,7 +352,7 @@ describe('App should', () => {
           field: 'People are Strange'
         }
       };
-      orderBy.dispatchEvent(new CustomEvent('orderbyremoved', eventPayload));
+      orderBy.dispatchEvent(new CustomEvent('orderby__removed', eventPayload));
       expect(postMessageSpy).toHaveBeenCalled();
       expect((postMessageSpy.mock.calls[0][0] as SoqlEditorEvent).type).toEqual(
         MessageType.UI_SOQL_CHANGED
@@ -370,7 +372,7 @@ describe('App should', () => {
           limit: '11'
         }
       };
-      limit.dispatchEvent(new CustomEvent('limitchanged', eventPayload));
+      limit.dispatchEvent(new CustomEvent('limit__changed', eventPayload));
       expect(postMessageSpy).toHaveBeenCalled();
       expect((postMessageSpy.mock.calls[0][0] as SoqlEditorEvent).type).toEqual(
         MessageType.UI_SOQL_CHANGED
